@@ -1,0 +1,16 @@
+{
+    "name": "joaop/template-engine",
+    "description": "Simple template engine, made by me.",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "João Pedro Holanda Neves",
+            "email": "joaopedroholandaneves@gmail.com"
+        }
+    ],
+    "require": {}
+}
