@@ -13,13 +13,7 @@ abstract class Engine
 	public static function render(string $view, array $data): string
 	{
 		self::$data = $data;
-
-		$path = __DIR__ . "/../View/{$view}.html";
-
-		if (!file_exists($path))
-			return self::$view;
-
-		self::$view = file_get_contents($path);
+		self::$view = $view;
 
 		self::replaceFunctions();
 		self::replaceVars();
@@ -29,60 +23,82 @@ abstract class Engine
 
 	private static function replaceVars()
 	{
-		$keys = array_map(function ($item) {
-			return "/\{\{\s?{$item}\s?\}\}/m";
-		}, array_keys(self::$data));
-		self::$view = preg_replace($keys, array_values(self::$data), self::$view);
+		preg_match_all('/\{\{\s?(?<varName>\w+)\s?\}\}/m', self::$view, $matches, PREG_SET_ORDER);
+
+		$replacements = [];
+
+		foreach ($matches as $match) {
+			$name = "/\{\{\s?{$match['varName']}\s?\}\}/m";
+			$value = self::$data[$match['varName']] ?? null;
+
+			if (isset($value))
+				$replacements[$name] = $value;
+		}
+
+		self::$view = preg_replace(array_keys($replacements), array_values($replacements), self::$view);
 	}
 
-	private static function replaceFunctions()
+	private static function replaceFunctions() // FIXME - Refactor this function.
+
 	{
 		preg_match_all('/\{\{\s?\?(?<name>\w+)\s(?<parameter>\w+)\s?\}\}(?<content>.*?)\{\{\s?\?\/\1\s?\}\}/s', self::$view, $matches, PREG_SET_ORDER);
-
-		if (count($matches) == 0)
-			return;
 
 		$replacements = [];
 
 		foreach ($matches as $match) {
 			$pattern = $match[0];
 
-			$parameter = self::$data[$match['parameter']];
-			unset(self::$data[$match['parameter']]);
+			$parameter = self::$data[$match['parameter']] ?? null;
 
 			$replace = call_user_func(array(self::class , $match['name']), $parameter, $match['content']);
 
 			$replacements[$pattern] = $replace;
 		}
 
-		self::$view = str_replace(array_keys($replacements), array_values($replacements), self::$view);
+		self::$view = str_replace(array_keys($replacements), array_values($replacements), self::$view); // FIXME - Change it to preg_replace;
 	}
 
 	private static function foreach (array $array, string $content): string
 	{
+		function pattern(string $value): string
+		{
+			return "/\{\{\s?this\.{$value}\s?\}\}/m";
+		}
 
-		preg_match_all('/\{\{\s?(?<name>\w+)\s?\}\}/m', $content, $contentMatches, PREG_SET_ORDER);
+		preg_match_all(pattern('(?<name>\w+)'), $content, $contentMatches, PREG_SET_ORDER);
 
 		$newContent = '';
 
-		foreach ($array as $value) {
-			$replacement = [];
+		foreach ($array as $key => $value) {
+			$replacement = [
+				pattern('index') => $key + 1
+			];
 
-			foreach ($contentMatches as $var) {
-				$pattern = $var[0];
-				$replace = $value[$var['name']];
-				$replacement[$pattern] = $replace;
+			if (!is_array($value)) {
+				$replacement[pattern('value')] = $value;
+			}
+			else {
+				foreach ($contentMatches as $var) {
+					$pattern = pattern($var['name']) ?? null;
+					$replace = $value[$var['name']] ?? null;
+
+					if (isset($replace, $pattern)) {
+						$replacement[$pattern] = strval($replace);
+					}
+				}
 			}
 
-			$newContent .= str_replace(array_keys($replacement), array_values($replacement), $content);
+			$newContent .= preg_replace(array_keys($replacement), array_values($replacement), $content);
 		}
 
 		return $newContent;
 	}
 
-	private static function if ()
+	private static function if (mixed $parameter, string $content)
 	{
-		return 'IF FUNCTION';
+		if (isset($parameter))
+			return $content;
+		return '';
 	}
 }
 

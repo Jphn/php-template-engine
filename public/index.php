@@ -4,6 +4,10 @@ use App\Util\Engine;
 
 include __DIR__ . '/../vendor/autoload.php';
 
+function de(mixed $value): void // FIXME - Debug only!
+{
+	exit(var_dump($value));
+}
 
 $data = [
 	'title' => 'HELLO WORLD',
@@ -45,8 +49,12 @@ $data = [
 			'number' => 9,
 			'name' => 'Nome9'
 		],
-	]
-
+	],
+	'subtitle' => 'HI'
 ];
 
-echo Engine::render('test', $data);
+$viewPath = __DIR__ . '/../src/View/test.html';
+
+$view = file_get_contents($viewPath);
+
+echo Engine::render($view, $data);

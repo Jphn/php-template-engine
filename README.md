@@ -13,10 +13,24 @@ Este é um simples projeto feito por mim, com o objetivo de desenvolver uma simp
 ### view.html
 
 ```html
+<!-- Global scope variables -->
 <h1>{{ title }}</h1>
+
+<!-- If function -->
+{{ ?if subtitle }}
+<h2>{{ subtitle }}</h2>
+{{ ?/if}}
+
+<!-- Foreach function -->
 <ul>
- {{ ?foreach data }}
- <li>{{ value }}<li>
+ {{ ?foreach array }}
+ <li>{{ this.index }} {{ this.value }}<li>
+ {{ ?/foreach }}
+</ul>
+<!-- Works fine with associative arrays too -->
+<ul>
+ {{ ?foreach associativeArray }}
+ <li>{{ this.index }} {{ this.name }} {{ this.age }}<li>
  {{ ?/foreach }}
 </ul>
 ```
@@ -26,27 +40,50 @@ Este é um simples projeto feito por mim, com o objetivo de desenvolver uma simp
 ```php
 $data = [
  'title' => 'Sample Title',
- [
-  'value' => 'First Name'
+ 'subtitle' => 'Subtitle',
+
+ 'array' => [
+  'First Name',
+  'Second Name',
+  'Third Name'
  ],
- [
-  'value' => 'Second Name'
- ],
- [
-  'value' => 'Third Name'
+
+ 'associativeArray' => [
+  [
+  'name' => 'First Name',
+  'age' => 99   
+  ],
+  [
+  'name' => 'Second Name',
+  'age' => 99   
+  ],
+  [
+  'name' => 'Third Name',
+  'age' => 99   
+  ]
  ]
 ];
 
-echo Engine::render('view', $data);
+$view = file_get_contents(...);
+
+echo Engine::render($view, $data);
 ```
 
 ### Saída
 
 ```html
 <h1>Sample Title</h1>
+
+<h2>Subtitle</h2>
+
 <ul>
- <li>First Name<li>
- <li>Second Name<li>
- <li>Third Name<li>
+ <li>1 First Name</li>
+ <li>2 Second Name</li>
+ <li>3 Third Name</li>
+</ul>
+<ul>
+ <li>1 First Name 99</li>
+ <li>2 Second Name 99</li>
+ <li>3 Third Name 99</li>
 </ul>
 ```
