@@ -49,6 +49,7 @@ abstract class Engine
 			$pattern = $match[0];
 
 			$parameter = self::$data[$match['parameter']] ?? null;
+			$parameter = isset($parameter) ? $parameter : (int)$match['parameter'] ?? null;
 
 			$replace = call_user_func(array(self::class , $match['name']), $parameter, $match['content']);
 
@@ -99,6 +100,17 @@ abstract class Engine
 		if (isset($parameter))
 			return $content;
 		return '';
+	}
+
+	private static function repeat(int $parameter, string $content)
+	{
+		$newContent = '';
+
+		for ($i = 1; $i <= $parameter; $i++) {
+			$newContent .= preg_replace('/\{\{\s?this\.index\s?\}\}/m', (string)$i, $content);
+		}
+
+		return $newContent;
 	}
 }
 
