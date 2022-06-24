@@ -50,7 +50,8 @@ $data = [
 			'name' => 'Nome9'
 		],
 	],
-	'subtitle' => 'HI'
+	'subtitle' => 'HI',
+	// 'ifTestVar' => 'test'
 ];
 
 $viewPath = __DIR__ . '/../src/View/test.html';

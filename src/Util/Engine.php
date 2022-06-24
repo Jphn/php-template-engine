@@ -48,8 +48,7 @@ abstract class Engine
 		foreach ($matches as $match) {
 			$pattern = $match[0];
 
-			$parameter = self::$data[$match['parameter']] ?? null;
-			$parameter = isset($parameter) ? $parameter : (int)$match['parameter'] ?? null;
+			$parameter = (int)$match['parameter'] != 0 ? (int)$match['parameter'] : self::$data[$match['parameter']] ?? null;
 
 			$replace = call_user_func(array(self::class , $match['name']), $parameter, $match['content']);
 
@@ -97,6 +96,8 @@ abstract class Engine
 
 	private static function if (mixed $parameter, string $content)
 	{
+
+
 		if (isset($parameter))
 			return $content;
 		return '';
