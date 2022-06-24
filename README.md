@@ -10,7 +10,7 @@ Este é um simples projeto feito por mim, com o objetivo de desenvolver uma simp
 
 ## Exemplo de uso
 
-### view.html
+***file.html***
 
 ```html
 <!-- Global scope variables -->
@@ -33,9 +33,16 @@ Este é um simples projeto feito por mim, com o objetivo de desenvolver uma simp
  <li>{{ this.index }} {{ this.name }} {{ this.age }}<li>
  {{ ?/foreach }}
 </ul>
+
+<!-- Repeat function -->
+<ul>
+ {{ ?repeat 5 }}
+ <li>{{ this.index }} {{ subtitle }}</li>
+ {{ ?/repeat }}
+</ul>
 ```
 
-### index.php
+***file.php***
 
 ```php
 $data = [
@@ -85,5 +92,13 @@ echo Engine::render($view, $data);
  <li>1 First Name 99</li>
  <li>2 Second Name 99</li>
  <li>3 Third Name 99</li>
+</ul>
+
+<ul>
+ <li>1 Subtitle</li>
+ <li>2 Subtitle</li>
+ <li>3 Subtitle</li>
+ <li>4 Subtitle</li>
+ <li>5 Subtitle</li>
 </ul>
 ```
