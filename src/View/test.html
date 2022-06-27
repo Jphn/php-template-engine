@@ -45,6 +45,12 @@
 				{{ ?/foreach }}
 			</tbody>
 		</table>
+
+		<ul>
+			{{ ?foreach numbers }}
+			<li>{{ this.value }}</li>
+			{{ ?/foreach }}
+		</ul>
 	</div>
 
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"

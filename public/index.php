@@ -12,6 +12,9 @@ function de(mixed $value): void // FIXME - Debug only!
 $data = [
 	'title' => 'HELLO WORLD',
 	'mainTitle' => 'HELLO WORLD',
+	'numbers' => [
+		1, 2, 3, 4, 5
+	],
 	'users' => [
 		[
 			'number' => 1,
